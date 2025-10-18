@@ -3,7 +3,7 @@ import { Contract } from 'ethers';
 import type { Address } from 'viem';
 import { useAccount, usePublicClient } from 'wagmi';
 
-import { CONTRACT_ABI, CONTRACT_ADDRESS, HAS_CONTRACT_ADDRESS } from '../config/contract';
+import { CONTRACT_ABI, CONTRACT_ADDRESS } from '../config/contract';
 import { useEthersSigner } from '../hooks/useEthersSigner';
 import { useZamaInstance } from '../hooks/useZamaInstance';
 import { GameCard, type GameInfo } from './GameCard';
@@ -18,7 +18,6 @@ export function GameDashboard() {
   const { instance, isLoading: isZamaLoading, error: zamaError } = useZamaInstance();
 
   const zamaReady = useMemo(() => Boolean(instance) && !isZamaLoading && !zamaError, [instance, isZamaLoading, zamaError]);
-  const contractConfigured = HAS_CONTRACT_ADDRESS;
 
   const [games, setGames] = useState<GameInfo[]>([]);
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -32,7 +31,7 @@ export function GameDashboard() {
   const [rolesByGame, setRolesByGame] = useState<RolesByGame>({});
 
   const refreshGames = useCallback(async () => {
-    if (!publicClient || !contractConfigured) {
+    if (!publicClient) {
       return;
     }
 
@@ -91,10 +90,10 @@ export function GameDashboard() {
   }, [publicClient]);
 
   useEffect(() => {
-    if (publicClient && contractConfigured) {
+    if (publicClient) {
       refreshGames();
     }
-  }, [publicClient, refreshGames, contractConfigured]);
+  }, [publicClient, refreshGames]);
 
   const resetRoleForGame = useCallback((gameId: bigint) => {
     setRolesByGame((previous) => {
@@ -119,11 +118,6 @@ export function GameDashboard() {
   const handleCreateGame = useCallback(async () => {
     setFeedback(null);
     setError(null);
-
-    if (!contractConfigured) {
-      setError('Set VITE_ENCRYPTED_MAFIA_ADDRESS before interacting with the contract.');
-      return;
-    }
 
     try {
       setIsCreating(true);
@@ -223,11 +217,6 @@ export function GameDashboard() {
         return;
       }
 
-      if (!contractConfigured) {
-        setError('Set VITE_ENCRYPTED_MAFIA_ADDRESS before decrypting roles.');
-        return;
-      }
-
       if (!address) {
         setError('Connect your wallet to decrypt roles');
         return;
@@ -315,19 +304,13 @@ export function GameDashboard() {
   return (
     <div className="dashboard-panel">
       <div className="dashboard-actions">
-        <button onClick={handleCreateGame} disabled={!isConnected || isCreating || !contractConfigured}>
+        <button onClick={handleCreateGame} disabled={!isConnected || isCreating }>
           {isCreating ? 'Creating…' : 'Create Game'}
         </button>
-        <button onClick={refreshGames} disabled={isRefreshing || !contractConfigured}>
+        <button onClick={refreshGames} disabled={isRefreshing }>
           {isRefreshing ? 'Refreshing…' : 'Refresh'}
         </button>
       </div>
-
-      {!contractConfigured && (
-        <div className="dashboard-error">
-          Set <code>VITE_ENCRYPTED_MAFIA_ADDRESS</code> in the frontend environment to enable contract access.
-        </div>
-      )}
 
       {feedback && <div className="dashboard-feedback">{feedback}</div>}
       {error && <div className="dashboard-error">{error}</div>}
