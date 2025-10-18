@@ -1,6 +1,6 @@
 import type { Address } from 'viem';
 
-const fallbackAddress = '0x0000000000000000000000000000000000000000' as const;
+const fallbackAddress = '0x668978a871d398DdB8eaC6D4B2380efF35f7Def6' as const;
 
 export const CONTRACT_ADDRESS: Address = (import.meta.env.VITE_ENCRYPTED_MAFIA_ADDRESS ?? fallbackAddress) as Address;
 export const HAS_CONTRACT_ADDRESS = CONTRACT_ADDRESS !== fallbackAddress;

@@ -19,7 +19,14 @@ dotenv.config();
 
 const MNEMONIC: string = process.env.MNEMONIC ?? vars.get("MNEMONIC", "test test test test test test test test test test test junk");
 const INFURA_API_KEY: string = process.env.INFURA_API_KEY ?? vars.get("INFURA_API_KEY", "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-const DEPLOYER_PRIVATE_KEY: string = process.env.DEPLOYER_PRIVATE_KEY ?? vars.get("DEPLOYER_PRIVATE_KEY", "");
+
+const resolvedPrivateKey =
+  process.env.DEPLOYER_PRIVATE_KEY ??
+  process.env.PRIVATE_KEY ??
+  vars.get("DEPLOYER_PRIVATE_KEY", "");
+
+const formattedPrivateKey =
+  resolvedPrivateKey && resolvedPrivateKey.startsWith("0x") ? resolvedPrivateKey : resolvedPrivateKey ? `0x${resolvedPrivateKey}` : "";
 
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
@@ -53,7 +60,7 @@ const config: HardhatUserConfig = {
       url: "http://localhost:8545",
     },
     sepolia: {
-      accounts: DEPLOYER_PRIVATE_KEY ? [DEPLOYER_PRIVATE_KEY] : [],
+      accounts: formattedPrivateKey ? [formattedPrivateKey] : [],
       chainId: 11155111,
       url: `https://sepolia.infura.io/v3/${INFURA_API_KEY}`,
     },
