@@ -2,11 +2,11 @@
 pragma solidity ^0.8.27;
 
 import {FHE, euint8} from "@fhevm/solidity/lib/FHE.sol";
-import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
+import {ZamaEthereumConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 
 /// @title Encrypted Mafia game coordinator
 /// @notice Manages five-player Mafia games with encrypted roles
-contract EncryptedMafia is SepoliaConfig {
+contract EncryptedMafia is ZamaEthereumConfig {
     uint8 private constant MAX_PLAYERS = 5;
     uint256 private _nextGameId = 1;
 

@@ -1,6 +1,6 @@
 import type { Address } from 'viem';
 
-const fallbackAddress = '0x668978a871d398DdB8eaC6D4B2380efF35f7Def6' as const;
+const fallbackAddress = '0x2c35a4f31a3978eB3AE9C8000dB711Af04f09Cb4' as const;
 
 export const CONTRACT_ADDRESS: Address = fallbackAddress as Address;
 
